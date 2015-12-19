@@ -7,13 +7,17 @@ StarTetrahedron starTetrahedron;
 
 void setup() {
   size(800, 800, P3D);
-
-  starTetrahedron = new StarTetrahedron(0, 0, 0, 100);  // x, y, z, strutLength
+  ortho();
+  
+  starTetrahedron = new StarTetrahedron(0, 0, 0, 200);  // x, y, z, strutLength
 }
 
 void draw() {
-  background(255);
+  background(230);
 
+  //camera(mouseX*2, height/2, (height/2) / tan(PI/6), width/2, height/2, 0, 0, 1, 0);
+  //camera(mouseX, height/2, (height/2) / tan(PI/6), mouseX, height/2, 0, 0, 1, 0);
+  
   //if (keyPressed) {
   //  if (key == 32) {
   //    fill(255);
