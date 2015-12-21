@@ -1,7 +1,6 @@
-/* OpenProcessing Tweak of *@*http://www.openprocessing.org/sketch/11908*@* */
-/* !do not delete the line above, required for linking your tweak if you upload again */
+
 int num = 18;
-int edgeLength = 50; // was 20
+private final int EDGE_LENGTH = 300;
 
 StarTetrahedron starTetrahedron;
 
@@ -9,7 +8,7 @@ void setup() {
   size(800, 800, P3D);
   ortho();
   
-  starTetrahedron = new StarTetrahedron(0, 0, 0, 200);  // x, y, z, strutLength
+  starTetrahedron = new StarTetrahedron(width/2, height/2, 0, EDGE_LENGTH);  // x, y, z, edgeLength
 }
 
 void draw() {
