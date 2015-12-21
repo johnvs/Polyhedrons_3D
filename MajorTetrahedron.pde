@@ -1,62 +1,104 @@
 
+/*  
+
+  Each major tetrahedron is composed of four small tetrahedrons.
+    0, 1 and 2 make up the base, with 3 being the top.
+  Each small tetrahedron is composed of three faces.
+  Each face is composed of three verticies.
+  
+  Ex.
+    tetrahedron 0
+      face  vC
+      0     3, 11, 7
+      1     11, 10, 7
+      2     10, 3, 7
+ 
+    tetrahedron 1
+      face  vC
+      0     2, 10, 9
+      1     10, 12, 9
+      2     12, 2, 9
+ 
+    tetrahedron 2
+      face  vC
+      0     1, 12, 8
+      1     12, 11, 8
+      2     11, 1, 8
+ 
+    tetrahedron 3
+      face  vC
+      0     1, 3, 0
+      1     3, 2, 0
+      2     2, 1, 0
+*/
+   
 
 class MajorTetrahedron {
-  private Tetrahedron[] tetrahedrons;
-  
-  //private static int edgeLength;
-  //private static int edgeLengthHalf;
-  //private static  float radius1;
-  //private static  float radius2;
-  //private static  float hgt;
-  //private static  float hgtHalf;
-  //private static  float hgtThreeHalfs;
+  private final int NUM_TETRAS = 4;
+  private Tetrahedron[] tetrahedrons = new Tetrahedron[NUM_TETRAS];
 
-  //private static PVector[] vertexCoords;     // Stores the coordinates of all the verticies
-  //private static final int NUM_VERTICIES = 14;
-  
-  MajorTetrahedron(int tetraNum, int edgeLen) {
-    tetrahedrons = new Tetrahedron[4];
+  private int[][][] vertexGroup = {
+                                    { { 3, 11,  7}, {11, 10,  7}, {10,  3,  7} },
+                                    { { 2, 10,  9}, {10, 12,  9}, {12,  2,  9} }, 
+                                    { { 1, 12,  8}, {12, 11,  8}, {11,  1,  8} },
+                                    { { 1,  3,  0}, { 3,  2,  0}, { 2,  1,  0} }, 
+                                    
+                                    { {11,  3,  4}, { 3,  1,  4}, { 1, 11,  4} },
+                                    { {12,  1,  5}, { 1,  2,  5}, { 2, 12,  5} },
+                                    { {10,  2,  6}, { 2,  3,  6}, { 3, 10,  6} }, 
+                                    { {10, 11, 13}, {11, 12, 13}, {12, 10, 13} }
+                                  };
+
+  MajorTetrahedron(int tetraNum, VertexCoords vertexCoords) {
     
-    for (int i = 0; i < tetrahedrons.length; ++i) {
-      tetrahedrons[i] = new Tetrahedron();
+    if (vertexCoords != null) {
+      //vertexCoords = vC;
+      println("MT: vertexCoords is not null");
+    } else {
+      println("MT: vertexCoords is null");
     }
     
-  }
-  
-  public static void init(int edgeLen) {
+    PVector[] verticies = new PVector[3];
+    Face[] faces = new Face[3];
 
-    //edgeLength = edgeLen;
-    //edgeLengthHalf = edgeLength/2;
-    //radius1 = edgeLength / (2*sqrt(3));
-    //radius2 = edgeLength / sqrt(3);
-    //hgt = edgeLength * sqrt(2.0 / 3.0);
-    //hgtHalf = hgt/2.0;
-    //hgtThreeHalfs = hgtHalf * 3.0;
-    //println("radius1 = ", radius1);
-    //println("radius2 = ", radius2);
-    //println("hgt = ", hgt);
-
-    //vertexCoords = new PVector[NUM_VERTICIES];
-    //for (int i = 0; i < vertexCoords.length; ++i) {
-    // vertexCoords[i] = new PVector();
-    //}
-    //setupVerticies();
-    
     if (tetraNum == 0) {
-      // Fill the tretrahedrons for the upward facing major tetrahedron
-      
+      // Create the minor tretrahedrons for the upward facing major tetrahedron
+      for (int i = 0; i < NUM_TETRAS; ++i) {
+        for (int j = 0; j < faces.length; ++j) {
+          for (int k = 0; k < verticies.length; ++k) {
+            
+            PVector temp = vertexCoords.getCoords(vertexGroup[i][j][k]);
+            verticies[k] = new PVector(temp.x, temp.y, temp.z);
+
+          }
+          faces[j] = new Face(verticies);
+        }
+        tetrahedrons[i] = new Tetrahedron(faces);
+      }
+
     } else if (tetraNum == 1) {
-      // Fill the tretrahedrons for the downward facing major tetrahedron
-      
-    }
-    
-    
-    for (int i = 0; i < tetrahedrons.length; ++i) {
-      //tetrahedrons[i]
-    }
+      // Create the minor tretrahedrons for the downward facing major tetrahedron
+      for (int i = 0; i < NUM_TETRAS; ++i) {
+        for (int j = 0; j < faces.length; ++j) {
+          for (int k = 0; k < verticies.length; ++k) {
+            
+            println("MT: getCoords index indices: ", i+4, ", ", j, ", ", k);
+            PVector temp = vertexCoords.getCoords(vertexGroup[i+4][j][k]);
+            verticies[k] = new PVector(temp.x, temp.y, temp.z);
 
-    
+          }
+          faces[j] = new Face(verticies);
+        }
+        tetrahedrons[i] = new Tetrahedron(faces);
+      }
+        
+    }
   }
-
   
+  public void drawMT() {
+    for (int i = 0; i < NUM_TETRAS; ++i) {
+      tetrahedrons[i].drawTetra();
+    }
+  }
+ 
 }
