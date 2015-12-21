@@ -5,22 +5,20 @@ class Face {
   private PVector[] verticies;
   //private PVector normal;
 
-  //Face(int v1, int v2, int v3) {
+  /////////////////////////////////////
+  // Constructor
+  /////////////////////////////////////
   Face(PVector[] iVerticies) {
-    verticies = new PVector[3];
-  
-    verticies[0].x = iVerticies[0].x;
-    verticies[0].y = iVerticies[0].y;
-    verticies[0].z = iVerticies[0].z;
 
-    verticies[1].x = iVerticies[1].x;
-    verticies[1].y = iVerticies[1].y;
-    verticies[1].z = iVerticies[1].z;
+    if (iVerticies.length == 3) {
+      verticies = new PVector[3];
 
-    verticies[2].x = iVerticies[2].x;
-    verticies[2].y = iVerticies[2].y;
-    verticies[2].z = iVerticies[2].z;
-
+      for (int i = 0; i < verticies.length; ++i) {
+        verticies[i] = new PVector(iVerticies[i].x, iVerticies[i].y, iVerticies[i].z);
+      }
+    } else {
+      println("Face: incorrect number of verticies - ", iVerticies.length);
+    }
   }
   
   public void setColor(color clr) {
