@@ -23,18 +23,24 @@ class Tetrahedron {
     }
   }
   
+  public void setFaceColors (color[] faceColors) {
+    if (faceColors.length == NUM_FACES) {
+      for (int i = 0; i < NUM_FACES; ++i) {
+        faces[i].setColor(faceColors[i]);
+      }
+    }
+  }
+  
   public Face[] getFaces() {
     return faces;
   }
   
   public void updateTetra() {
-    //angleY += spin;
-    //angleZ += spin;
   }
   
   public void drawTetra() {
     for (int i = 0; i < NUM_FACES; ++i) {
-      faces[i].drawFace(100);
+      faces[i].drawFace();
     }
   }
   
