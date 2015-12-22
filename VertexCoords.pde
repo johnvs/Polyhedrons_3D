@@ -56,8 +56,8 @@ class VertexCoords {
   }
   
   public PVector getCoords(int index) {
-    println("VC: vertexCoords size = ", vertexCoords.length);
-    println("VC: index = ", index);
+    //println("VC: vertexCoords size = ", vertexCoords.length);
+    //println("VC: index = ", index);
     return vertexCoords[index];
   }
 
