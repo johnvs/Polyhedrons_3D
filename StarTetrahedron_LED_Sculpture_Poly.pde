@@ -1,8 +1,20 @@
 
+/*
+  Thoughts on content generation
+    Grouping faces
+      1. The faces of the tetrahedrons of the upward and downward pointing major tetrahedrons, respectively.
+      2. All faces with the same normals (i.e. each face of the major tetrahedrons).
+      3. Faces that share an edge and that "face each other".  (like this __/)
+      4. The faces that make up 
+
+*/
+
 int num = 18;
 private final int EDGE_LENGTH = 300;
 
 boolean runShow;
+int prevFC;
+int delayFC = 5;
 
 StarTetrahedron starTetrahedron;
 VisConGen jamesBrown;
@@ -17,13 +29,20 @@ void setup() {
   starTetrahedron = new StarTetrahedron(width/2, height/2, 0, EDGE_LENGTH);  // x, y, z, edgeLength
   
   runShow = true;
+  prevFC = 0;
 }
 
 void draw() {
   if (runShow) {
     background(200);
-    colorMap = jamesBrown.update();
-    starTetrahedron.setColorMap(colorMap);
+
+    // Use delay to control speed of color update
+    if (frameCount > prevFC + delayFC) {
+      prevFC = frameCount;
+      colorMap = jamesBrown.update();
+      starTetrahedron.setColorMap(colorMap);
+    }
+
     starTetrahedron.update();
     starTetrahedron.drawST();
   }
