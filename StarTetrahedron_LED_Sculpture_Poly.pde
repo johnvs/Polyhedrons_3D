@@ -9,8 +9,8 @@
 
 */
 
-int num = 18;
 private final int EDGE_LENGTH = 300;
+private final int NUM_FACES = 24;
 
 boolean runShow;
 int prevFC;
@@ -18,14 +18,14 @@ int delayFC = 5;
 
 StarTetrahedron starTetrahedron;
 VisConGen jamesBrown;
-color[][] colorMap;
+color[] colorMap;
 
 void setup() {
   size(800, 800, P3D);
   colorMode(HSB, 255);  // Set color mode to HSB, with max values of 255.
   ortho();
   
-  jamesBrown = new VisConGen();
+  jamesBrown = new VisConGen(NUM_FACES);
   starTetrahedron = new StarTetrahedron(width/2, height/2, 0, EDGE_LENGTH);  // x, y, z, edgeLength
   
   runShow = true;

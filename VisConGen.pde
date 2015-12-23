@@ -1,36 +1,29 @@
 
 
 class VisConGen {
-  private final int NUM_TETRAS = 8;
-  private final int NUM_FACES = 3;
   private final int MAX_HUE = 255;
   private final int MAX_SAT = 255;
   private final int MAX_BRT = 255;
   
   // A color array with a color for each face of the shape
-  color[][] colorMap = new color[NUM_TETRAS][NUM_FACES];
+  private color[] colorMap;
   
-  VisConGen() {
-    //int hueInc = MAX_HUE / (NUM_TETRAS * NUM_FACES);
+  VisConGen(int numFaces) {
+    colorMap = new color[numFaces];
     int hueTetra = 0;
-    final int TOTAL_FACE_CNT = NUM_FACES * NUM_TETRAS;
     
-    for (int i = 0; i < NUM_TETRAS; ++i) {
-      for (int j = 0; j < NUM_FACES; ++j) {
-        // Initialize the color map
-        // Map the full hue range evenly across all the faces
-        hueTetra = (int) map((i*NUM_FACES + j), 0, TOTAL_FACE_CNT, 0 , MAX_HUE);
-        colorMap[i][j] = color(hueTetra, MAX_SAT, MAX_BRT);
-      }
+    for (int i = 0; i < numFaces; ++i) {
+      // Initialize the color map. Map the full hue 
+      // range evenly across all the faces
+      hueTetra = (int) map(i, 0, numFaces, 0 , MAX_HUE);
+      colorMap[i] = color(hueTetra, MAX_SAT, MAX_BRT);
     }
   }
   
   // Update the color map
-  public color[][] update() {
-    for (int i = 0; i < NUM_TETRAS; ++i) {
-      for (int j = 0; j < NUM_FACES; ++j) {
-        colorMap[i][j] = incHue(colorMap[i][j]); 
-      }
+  public color[] update() {
+    for (int i = 0; i < colorMap.length; ++i) {
+        colorMap[i] = incHue(colorMap[i]); 
     }
     return colorMap;
   }
