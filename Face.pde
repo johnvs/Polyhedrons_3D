@@ -1,24 +1,19 @@
 
 
 class Face {
+  private PShape face;
   private color faceColor;
-  private PVector[] verticies;
   //private PVector normal;
+
+//Dir = (B - A) x (C - A)
+//Norm = Dir / len(Dir)
 
   /////////////////////////////////////
   // Constructor
   /////////////////////////////////////
-  Face(PVector[] iVerticies) {
+  Face(PShape iFace) {
 
-    if (iVerticies.length == 3) {
-      verticies = new PVector[3];
-
-      for (int i = 0; i < verticies.length; ++i) {
-        verticies[i] = new PVector(iVerticies[i].x, iVerticies[i].y, iVerticies[i].z);
-      }
-    } else {
-      println("Face: incorrect number of verticies - ", iVerticies.length);
-    }
+    face = iFace;
   }
   
   public void setColor(color clr) {
@@ -30,22 +25,13 @@ class Face {
   }
   
   public void drawFace() {
-    fill(faceColor);
-
-    beginShape();
-    vertex(verticies[0].x, verticies[0].y, verticies[0].z);
-    vertex(verticies[1].x, verticies[1].y, verticies[1].z);
-    vertex(verticies[2].x, verticies[2].y, verticies[2].z);
-    endShape();
+    face.setFill(faceColor);
+    shape(face);
   }
 
   public void drawFace(color iFaceColor) {
-    fill(iFaceColor);
-
-    beginShape();
-    vertex(verticies[0].x, verticies[0].y, verticies[0].z);
-    vertex(verticies[1].x, verticies[1].y, verticies[1].z);
-    vertex(verticies[2].x, verticies[2].y, verticies[2].z);
-    endShape();
+    face.setFill(iFaceColor);
+    shape(face);
   }
+
 }
