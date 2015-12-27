@@ -40,14 +40,14 @@ class VertexCoords {
   /////////////////////////////////////
   VertexCoords(int edgeLen) {
 
-    edgeLength = edgeLen;
-    edgeLengthHalf = edgeLength/2;
-    radius1 = edgeLength / (2*sqrt(3));
-    radius2Minor = edgeLength / sqrt(3);
-    radius2Major = 2 * radius2Minor;
-    hgt = edgeLength * sqrt(2.0 / 3.0);
-    hgtHalf = hgt/2.0;
-    hgtThreeHalves = 3.0 * hgtHalf;
+    edgeLength = edgeLen;                   // 1.0
+    edgeLengthHalf = edgeLength/2;          // 0.5
+    radius1 = edgeLength / (2*sqrt(3));     // 0.288 675 134
+    radius2Minor = edgeLength / sqrt(3);    // 0.577 350 269
+    radius2Major = 2 * radius2Minor;        // 1.154 700 538
+    hgt = edgeLength * sqrt(2.0 / 3.0);     // 0.816 496 580
+    hgtHalf = hgt/2.0;                      // 0.408 248 290
+    hgtThreeHalves = 3.0 * hgtHalf;         // 1.224 744 871
     //println("radius1 = ", radius1);
     //println("radius2 = ", radius2);
     //println("hgt = ", hgt);
