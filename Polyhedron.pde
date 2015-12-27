@@ -13,7 +13,8 @@
  2     10, 3, 7
  */
 
-class StarTetrahedron {
+//class StarTetrahedron {
+class Polyhedron {
   private int x;
   private int y;
   private int z;
@@ -23,49 +24,39 @@ class StarTetrahedron {
   private float angleZ = 0;  // PI/2;
   private float spin = 0.01;
 
-  private final int NUM_FACES = 24;
+  //private final int NUM_FACES = 24;
+  private int numFaces;
 
-  private VertexCoords vertexCoords;
+  //private VertexCoords vertexCoords;
 
   private VisConGen jB;
 
-  private ArrayList<Face> faces = new ArrayList<Face>(NUM_FACES);
+  //private ArrayList<Face> faces = new ArrayList<Face>(NUM_FACES);
 
   // These are the indicies of the vertex coordinates array.
   // There are 24 groups of the 3 coordinate array indicies.
   // Each element (number) in the array represents a vertex coordinate (x, y, z) of a face. 
   // Groups of three coordinates represents a face 
-  //private int[][][] vertexGroup = {
-  //                                  { { 3, 11,  7}, {11, 10,  7}, {10,  3,  7} },
-  //                                  { { 2, 10,  9}, {10, 12,  9}, {12,  2,  9} }, 
-  //                                  { { 1, 12,  8}, {12, 11,  8}, {11,  1,  8} },
-  //                                  { { 1,  3,  0}, { 3,  2,  0}, { 2,  1,  0} }, 
+  //private int[][] vertexGroup = 
+  //{ 
+  //  { 3, 11,  7}, {11, 10,  7}, {10,  3,  7}, 
+  //  { 2, 10,  9}, {10, 12,  9}, {12,  2,  9}, 
+  //  { 1, 12,  8}, {12, 11,  8}, {11,  1,  8}, 
+  //  { 1,  3,  0}, { 3,  2,  0}, { 2,  1,  0}, 
+  //  {11,  3,  4}, { 3,  1,  4}, { 1, 11,  4}, 
+  //  {12,  1,  5}, { 1,  2,  5}, { 2, 12,  5}, 
+  //  {10,  2,  6}, { 2,  3,  6}, { 3, 10,  6}, 
+  //  {10, 11, 13}, {11, 12, 13}, {12, 10, 13} 
+  //};
 
-  //                                  { {11,  3,  4}, { 3,  1,  4}, { 1, 11,  4} },
-  //                                  { {12,  1,  5}, { 1,  2,  5}, { 2, 12,  5} },
-  //                                  { {10,  2,  6}, { 2,  3,  6}, { 3, 10,  6} }, 
-  //                                  { {10, 11, 13}, {11, 12, 13}, {12, 10, 13} }
-  //                                };
-
-  private int[][] vertexGroup = 
-  { 
-    { 3, 11,  7}, {11, 10,  7}, {10,  3,  7}, 
-    { 2, 10,  9}, {10, 12,  9}, {12,  2,  9}, 
-    { 1, 12,  8}, {12, 11,  8}, {11,  1,  8}, 
-    { 1,  3,  0}, { 3,  2,  0}, { 2,  1,  0}, 
-    {11,  3,  4}, { 3,  1,  4}, { 1, 11,  4}, 
-    {12,  1,  5}, { 1,  2,  5}, { 2, 12,  5}, 
-    {10,  2,  6}, { 2,  3,  6}, { 3, 10,  6}, 
-    {10, 11, 13}, {11, 12, 13}, {12, 10, 13} 
-  };
-
-  StarTetrahedron(int xx, int yy, int zz, int edgeLen) {
+  //StarTetrahedron(int xx, int yy, int zz, int edgeLen) {
+  Polyhedron(int xx, int yy, int zz, String filename) {
     x = xx;
     y = yy;
     z = zz;
 
     // Calculate and store the coordinates of the shape's verticies
-    vertexCoords = new VertexCoords(edgeLen);
+    //vertexCoords = new VertexCoords(edgeLen);
 
     println("ST: face arraylist size = ", faces.size());
     // Create all the faces and put them in the ArrayList 
@@ -79,6 +70,9 @@ class StarTetrahedron {
 
       face = createShape();
       face.beginShape();
+      //face.noStroke();
+      face.stroke(0);
+      face.strokeWeight(0.5);
       face.vertex(vc0.x, vc0.y, vc0.z);
       face.vertex(vc1.x, vc1.y, vc1.z);
       face.vertex(vc2.x, vc2.y, vc2.z);
@@ -99,11 +93,11 @@ class StarTetrahedron {
     angleZ += spin;
   }
 
-  public void drawST() {
+  public void drawPoly(int scale) {
 
     pushMatrix();
 
-    noStroke();
+    //noStroke();
     //stroke(0);
     //noFill();
 
@@ -119,7 +113,7 @@ class StarTetrahedron {
     rotateZ(angleZ);    // was =PI/6
 
     for (int i = 0; i < NUM_FACES; ++i) {
-      faces.get(i).drawFace();
+      faces.get(i).drawFace(scale);
     }
 
     popMatrix();
