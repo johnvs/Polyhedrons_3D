@@ -13,25 +13,29 @@
  2     10, 3, 7
  */
 
-//class StarTetrahedron {
 class Polyhedron {
   private int x;
   private int y;
   private int z;
 
-  private float angleX = radians(60);   // PI/2;
+  private float angleX = 0;  // radians(60);   // PI/2;
   private float angleY = 0;
   private float angleZ = 0;  // PI/2;
   private float spin = 0.01;
+  
+  private float scaleFactor;
 
-  //private final int NUM_FACES = 24;
+  private color[] colorMap;
+  private VisConGen visualContent;
+
+  private VertexCoord vertexCoords[];
+  private Face faces[];
   private int numFaces;
 
-  //private VertexCoords vertexCoords;
+  private int prevFrameCount = 0;
+  private int delayFrameCount = 5;
 
-  private VisConGen jB;
-
-  //private ArrayList<Face> faces = new ArrayList<Face>(NUM_FACES);
+//private ArrayList<Face> faces = new ArrayList<Face>(NUM_FACES);
 
   // These are the indicies of the vertex coordinates array.
   // There are 24 groups of the 3 coordinate array indicies.
@@ -49,24 +53,56 @@ class Polyhedron {
   //  {10, 11, 13}, {11, 12, 13}, {12, 10, 13} 
   //};
 
-  //StarTetrahedron(int xx, int yy, int zz, int edgeLen) {
-  Polyhedron(int xx, int yy, int zz, String filename) {
-    x = xx;
-    y = yy;
-    z = zz;
+  Polyhedron(int x_, int y_, int z_, float scaleFactor_, String filename) {
+    x = x_;
+    y = y_;
+    z = z_;
+    scaleFactor = scaleFactor_;
 
     // Calculate and store the coordinates of the shape's verticies
-    //vertexCoords = new VertexCoords(edgeLen);
+    // Load the json data from the file
+    JSONObject polyDataJson = loadJSONObject(filename);
+    
+    JSONArray coordJArray = polyDataJson.getJSONArray("verticies");
+    vertexCoords = new VertexCoord[coordJArray.size()];
+    
+    for (int i = 0; i < coordJArray.size(); ++i) {
+      JSONObject coordJObj = coordJArray.getJSONObject(i);
+      
+      float x = coordJObj.getFloat("x");
+      float y = coordJObj.getFloat("y");
+      float z = coordJObj.getFloat("z");
 
-    println("ST: face arraylist size = ", faces.size());
-    // Create all the faces and put them in the ArrayList 
-    for (int i = 0; i < NUM_FACES; ++i) {
+      //println("PolyH: coords[", i, "] = ", x, ", ", y, ", ", z);
+
+      vertexCoords[i] = new VertexCoord(x, y, z);
+    }
+    
+    JSONArray faceJArray = polyDataJson.getJSONArray("faces");
+    numFaces = faceJArray.size();
+    faces = new Face[numFaces];
+    colorMap = new color[numFaces];
+    
+    //println("PolyH: face arraylist size = ", faces.length);
+
+    for (int i = 0; i < faceJArray.size(); ++i) {
+      JSONObject faceJObj = faceJArray.getJSONObject(i);
+      
+      int v1 = faceJObj.getInt("v1");
+      int v2 = faceJObj.getInt("v2");
+      int v3 = faceJObj.getInt("v3");
+      
+      //println("PolyH: faces[", i, "] = ", v1, ", ", v2, ", ", v3);
+
+      // Create all the faces and put them in the ArrayList 
       PShape face = null;
 
       // Get the coordinates of the face's three verticies
-      PVector vc0 = vertexCoords.getCoords(vertexGroup[i][0]);
-      PVector vc1 = vertexCoords.getCoords(vertexGroup[i][1]);
-      PVector vc2 = vertexCoords.getCoords(vertexGroup[i][2]);
+      PVector vc0 = vertexCoords[v1].getCoord();
+      PVector vc1 = vertexCoords[v2].getCoord();
+      PVector vc2 = vertexCoords[v3].getCoord();
+
+      //println("PolyH: face PVs[", i, "] = ", vc0, ", ", vc1, ", ", vc2);
 
       face = createShape();
       face.beginShape();
@@ -77,23 +113,34 @@ class Polyhedron {
       face.vertex(vc1.x, vc1.y, vc1.z);
       face.vertex(vc2.x, vc2.y, vc2.z);
       face.endShape();
-      faces.add(new Face(face));
-      println("ST: add new face to array list, i = ", i);
+      faces[i] = new Face(face);
+      //println("PolyH: add new face to array list, i = ", i);
     }
+    
+    visualContent = new VisConGen(numFaces);
+
   }
 
   public void setColorMap(color[] colorMap) {
     // load color map into face color array
-    for (int i = 0; i < NUM_FACES; ++i) {
-      faces.get(i).setColor(colorMap[i]);
+    for (int i = 0; i < numFaces; ++i) {
+      faces[i].setColor(colorMap[i]);
     }
   }
 
   public void update() {
+    
+    // Use delay to control speed of color update
+    if (frameCount > prevFrameCount + delayFrameCount) {
+      prevFrameCount = frameCount;
+      colorMap = visualContent.update();
+      setColorMap(colorMap);
+    }
+
     angleZ += spin;
   }
 
-  public void drawPoly(int scale) {
+  public void drawPoly() {
 
     pushMatrix();
 
@@ -105,15 +152,18 @@ class Polyhedron {
 
     float angleXDeg = map(mouseY, height, 0, 0, 180);    // was PI/2
     float angleX = radians(angleXDeg);
+
     //rotateX(angleXRad);    // was PI/2
     //rotateX(radians(map(mouseX, 0, width, 0, 90)));    // was PI/2
     //println("T: angleXDeg = ", angleXDeg, " angleXRad = ", angleXRad);
+
     rotateX(angleX);    // was PI/2
     rotateY(angleY);
     rotateZ(angleZ);    // was =PI/6
+    scale(scaleFactor);
 
-    for (int i = 0; i < NUM_FACES; ++i) {
-      faces.get(i).drawFace(scale);
+    for (int i = 0; i < numFaces; ++i) {
+      faces[i].drawFace();
     }
 
     popMatrix();
