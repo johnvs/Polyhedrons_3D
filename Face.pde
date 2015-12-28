@@ -5,14 +5,13 @@ class Face {
   private color faceColor;
   //private PVector normal;
 
-//Dir = (B - A) x (C - A)
-//Norm = Dir / len(Dir)
+  //Dir = (B - A) x (C - A)
+  //Norm = Dir / len(Dir)
 
   /////////////////////////////////////
   // Constructor
   /////////////////////////////////////
   Face(PShape iFace) {
-
     face = iFace;
   }
   
