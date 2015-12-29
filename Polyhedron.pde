@@ -34,6 +34,8 @@ class Polyhedron {
 
   private int prevFrameCount = 0;
   private int delayFrameCount = 5;
+  
+  private int identGroupMember = -1;  // -1  = no group idented, 0 through numFaces, that face will be gray
 
 //private ArrayList<Face> faces = new ArrayList<Face>(NUM_FACES);
 
@@ -137,10 +139,30 @@ class Polyhedron {
       setColorMap(colorMap);
     }
 
-    angleZ += spin;
+    //angleZ += spin;
   }
 
+  public void incIdentGroup() {
+    if (identGroupMember < numFaces - 1) {
+      ++identGroupMember;
+    } else {
+      identGroupMember = -1;
+    }
+  }
+  
+  public void decIdentGroup() {
+    if (identGroupMember > -1) {
+      --identGroupMember;
+    } else {
+      identGroupMember = numFaces - 1;
+    }
+  }
+  
   public void drawPoly() {
+
+    textSize(32);
+    fill(0, 102, 153);
+    text(identGroupMember, width*0.05, height*0.95);
 
     pushMatrix();
 
@@ -150,8 +172,18 @@ class Polyhedron {
 
     translate(x, y, z);
 
-    float angleXDeg = map(mouseY, height, 0, 0, 180);    // was PI/2
-    float angleX = radians(angleXDeg);
+    //float angleYDeg = map(mouseX, 0, width, 180, -180);    // was PI/2
+    float angleZDeg;
+    if (mouseY <= height/2) {
+      angleZDeg = map(mouseX, 0, width, 180, -180);
+    } else {
+      angleZDeg = map(mouseX, width, 0, -180, 180);
+    }
+    angleZ = radians(angleZDeg);
+
+    float angleXDeg;
+    angleXDeg = map(mouseY, height, 0, 0, 180);    // was PI/2
+    angleX = radians(angleXDeg);
 
     //rotateX(angleXRad);    // was PI/2
     //rotateX(radians(map(mouseX, 0, width, 0, 90)));    // was PI/2
@@ -163,9 +195,21 @@ class Polyhedron {
     scale(scaleFactor);
 
     for (int i = 0; i < numFaces; ++i) {
-      faces[i].drawFace();
+      if (identGroupMember >= 0) {
+        if (i == identGroupMember) {
+          faces[i].drawFace(color(128));
+        } else {
+          faces[i].drawFace();
+        }
+      } else {
+        faces[i].drawFace();
+      }
     }
 
     popMatrix();
+
+    // Debug
+    //fill(0, 102, 153);
+    //text(angleXDeg, width*0.80, height*0.95);
   }
 }
