@@ -23,6 +23,10 @@ class Face {
     return faceColor;
   }
   
+  public int getNumVertices() {
+    return face.getVertexCount();
+  }
+  
   public void drawFace() {
     face.setFill(faceColor);
     shape(face);
