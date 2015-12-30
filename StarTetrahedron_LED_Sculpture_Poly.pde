@@ -94,6 +94,27 @@ void keyPressed() {
       polyhedrons[0].decIdentGroup();
     } 
   }
+  
+  if (key == '0') {
+    polyhedrons[0].setColorPattern(0);
+  }
+  
+  if (key == '1') {
+    polyhedrons[0].setColorPattern(1);
+  }
+  
+  if (key == '2') {
+    polyhedrons[0].setColorPattern(2);
+  }
+  
+  if (key == '3') {
+    polyhedrons[0].setColorPattern(3);
+  }
+  
+  if (key == '4') {
+    polyhedrons[0].setColorPattern(4);
+  }
+  
 }
 
   //camera(mouseX*2, height/2, (height/2) / tan(PI/6), width/2, height/2, 0, 0, 1, 0);
