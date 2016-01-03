@@ -2,6 +2,10 @@
 class Vertex {
   
   PVector pV;
+
+  Vertex(PVector pV_) {
+    pV = pV_;
+  }
   
   Vertex(float x_, float y_, float z_) {
     pV = new PVector();
