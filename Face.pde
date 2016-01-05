@@ -4,8 +4,8 @@ class Face {
   private PShape face;
   private color faceColor;
   private ArrayList<Integer> neighbors;
+  //private PVector faceCenter;
   //private PVector normal;
-
   //Dir = (B - A) x (C - A)
   //Norm = Dir / len(Dir)
 
