@@ -25,11 +25,11 @@ class VisConGen {
   private long randomWalkDelay = 250;   // number of millis of delay
   private long previousTime;            // the time in millis of the last color change
 
-  // A color array with a color for each face of the shape
-  //private color[] colorMap;
-  private ColorMap colorMap;
-  private int[] patternMap;
-  private int patternId;
+  // private ColorMap colorMap;
+  // private int[] patternMap;
+  // private int patternNum;
+
+  private ArrayList<Layer> layers;
 
 /*
   Thoughts on content generation
@@ -68,7 +68,7 @@ class VisConGen {
        2  3  4  5  6  7  8  9  0  1  2  3
 */
 
-  private int[][] patterns =
+  private static int[][] patterns =
     {
       {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -88,17 +88,23 @@ class VisConGen {
 
   VisConGen(int numFaces) {
     //colorMap = new color[numFaces];
-    colorMap = new ColorMap(numFaces);
-    colorMap.spreadHueEvenly();
+    Layer newLayer = new Layer(numFaces, 0);  // Params: numfaces = the size of buffer in pixels
+                                              //         patterNum = Specifies which pattern to load
+    newLayer.spreadHueEvenly();
+    layers.add(newLayer);
+    // colorMap = new ColorMap(numFaces);
+    // colorMap.spreadHueEvenly();
+    // patternNum = 0;
+    // patternMap = patterns[0];
     //for (int i = 0; i < numFaces; ++i) {
     //  colorMap[i] = new ColorMap(CLR_RED);
     //}
 
+    // Create the randomWalker Layer
+
     //colorMap.randonWalkClr = new ColorMap(CLR_RED);
-    randonWalkClr = new ColorMap(CLR_RED);
+    randonWalkClr = new ColorMap(ColorMap.CLR_RED);
     //randonWalkClr.setMap(CLR_RED.getMap());
-    patternId = 0;
-    //patternMap = new int[numFaces];
 
   }
 
@@ -141,64 +147,68 @@ class VisConGen {
   }
 
   public void setPattern(int p) {
-    if (patternId != p) {
 
-      patternId = p;
-      patternMap = patterns[p];
+    layers[0].setPattern(p);
 
-      switch (p) {
-        case 0:
-          spreadHueEvenly();
-          isRandomWalk = false;
-          break;
-        case 1:
-          for (int i = 0; i < colorMap.length; ++i) {
-            //println("patternMap size = ", patternMap.length, "index = ", i);
-            if (patternMap[i] == 1) {
-              colorMap[i].setHue(ColorMap.HUE_MIN);       // 1 => 0 , 2 => 128
-            } else if (patternMap[i] == 2) {
-              colorMap[i].setHue(ColorMap.HUE_HALF);
-            }
-          }
-          isRandomWalk = false;
-          break;
-        case 2:
-          // Spread the hue range across eight intervals
-          int hueInc = (ColorMap.HUE_MAX + 1) / 8;
-          for (int i = 0; i < colorMap.length; ++i) {
-            colorMap[i].setHue((patternMap[i] - 1) * hueInc);
-          }
-          isRandomWalk = false;
-          break;
-        case 3:
-          // Spread the hue range across 12 intervals
-          int hueInc = (ColorMap.HUE_MAX + 1) / 12;
-          for (int i = 0; i < colorMap.length; ++i) {
-            colorMap[i].setHue((patternMap[i] - 1) * hueInc);
-          }
-          break;
-        case 4:
-          // Setup randomWalker
-          isRandomWalk = true;
-          randomWalkIndex = 0;
-          randonWalkClr.setColor(CLR_RED.getHue(), CLR_RED.getSat(), CLR_RED.getBrt());
-          previousTime = millis() - randomWalkDelay;   // This will make it fire the next time through update
-          //allOneColor(CLR_WHITE.getHue(), CLR_WHITE.getSat(), CLR_WHITE.getBrt());
-          allOneColor(ColorMap.CLR_WHITE);
-          break;
-      }
-    }
+    // if (patternNum != p) {
+    //
+    //   patternNum = p;
+    //   patternMap = patterns[p];
+    //
+    //   switch (p) {
+    //     case 0:
+    //       spreadHueEvenly();
+    //       isRandomWalk = false;
+    //       break;
+    //     case 1:
+    //       // colorMap.setPattern(1);
+    //       for (int i = 0; i < numFaces; ++i) {
+    //         //println("patternMap size = ", patternMap.length, "index = ", i);
+    //         if (patternMap[i] == 1) {
+    //           colorMap.setHue(i, ColorMap.HUE_MIN);       // 1 => 0 , 2 => 128
+    //         } else if (patternMap[i] == 2) {
+    //           colorMap.setHue(i, ColorMap.HUE_HALF);
+    //         }
+    //       }
+    //       isRandomWalk = false;
+    //       break;
+    //     case 2:
+    //       // Spread the hue range across eight intervals
+    //       int hueInc = (ColorMap.HUE_MAX + 1) / 8;
+    //       for (int i = 0; i < numFaces; ++i) {
+    //         colorMap.setHue(i, (patternMap[i] - 1) * hueInc);
+    //       }
+    //       isRandomWalk = false;
+    //       break;
+    //     case 3:
+    //       // Spread the hue range across 12 intervals
+    //       int hueInc = (ColorMap.HUE_MAX + 1) / 12;
+    //       for (int i = 0; i < numFaces; ++i) {
+    //         colorMap.setHue(i, (patternMap[i] - 1) * hueInc);
+    //       }
+    //       break;
+    //     case 4:
+    //       // Setup randomWalker
+    //       isRandomWalk = true;
+    //       randomWalkIndex = 0;
+    //       randonWalkClr.setColor(CLR_RED.getHue(), CLR_RED.getSat(), CLR_RED.getBrt());
+    //       previousTime = millis() - randomWalkDelay;   // This will make it fire the next time through update
+    //       //allOneColor(CLR_WHITE.getHue(), CLR_WHITE.getSat(), CLR_WHITE.getBrt());
+    //       allOneColor(ColorMap.CLR_WHITE);
+    //       break;
+    //   }
+    // }
   }
 
   // Update the color map
   public color[] update(Face[] faces) {
-    color[] myColors = new color[colorMap.length];
+    color[] myColors = new color[numFaces];
 
-    for (int i = 0; i < colorMap.length; ++i) {
-      print("Old hue[", i, "] = ", colorMap[i].getHue());
+    for (int i = 0; i < numFaces; ++i) {
+      print("Old hue[", i, "] = ", colorMap.getHue(i));
       //colorMap[i] = incHue(colorMap[i]);
-      colorMap[i].incHue();
-      myColors[i] = colorMap[i].getColor();
+      colorMap.incHue(i);
+      myColors[i] = colorMap.getColor(i);
       println(", New hue = ", colorMap[i].getHue());
 
       if (isRandomWalk) {
@@ -208,8 +218,8 @@ class VisConGen {
             previousTime = millis();
 
             // Make the current face white and invert the next face
-            colorMap[i].setColor(CLR_WHITE.getHue(), CLR_WHITE.getSat(), CLR_WHITE.getBrt());
-            myColors[i] = CLR_WHITE.getColor();
+            colorMap.setMap(i, ColorMap.CLR_WHITE);
+            myColors[i] = ColorMap.CLR_WHITE.getColor();
 
             // Find one of the current face's neighbors to become the next step in the random walk
             ArrayList<Integer> neighbors = faces[i].getNeighbors();
@@ -217,7 +227,7 @@ class VisConGen {
             int newNeighbor = (int)(random(neighbors.size())) - 1;
             //println(" , new neightbor = ", newNeighbor);
             randomWalkIndex = neighbors.get(newNeighbor);
-            colorMap[randomWalkIndex].setMap(randonWalkClr.getMap());
+            colorMap.setMap(randomWalkIndex, randonWalkClr.getMap());
             myColors[randomWalkIndex] = randonWalkClr.getColor();
           }
         }
