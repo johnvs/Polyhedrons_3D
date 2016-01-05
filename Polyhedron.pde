@@ -1,7 +1,7 @@
 
-/*  
+/*
  Each polyhedron is made up of N faces, and each face is made up of M vertices.
- 
+
  */
 
 class Polyhedron {
@@ -12,8 +12,12 @@ class Polyhedron {
   private float angleX = 0;  // radians(60);   // PI/2;
   private float angleY = 0;
   private float angleZ = 0;  // PI/2;
+  private float angleXDeg;
+  private float angleYDeg;
+  private float angleZDeg;
+
   private float spin = 0.01;
-  
+
   private float scaleFactor;
 
   private color[] colorMap;
@@ -24,8 +28,10 @@ class Polyhedron {
 
   private int prevFrameCount = 0;
   private int delayFrameCount = 5;
-  
-  private int identGroupMember = -1;  // -1  = no group idented, 0 through numFaces, that face will be gray
+
+  private int identGroupMember = -1;  // -1  = no group idented, 0 through numFaces-1, that face will be gray
+
+  private float epsilon = 0.0000001;  // Used to compare two floats
 
   Polyhedron(int x_, int y_, int z_, float scaleFactor_, String filename) {
     x = x_;
@@ -39,10 +45,10 @@ class Polyhedron {
     numFaces = polyFacesJsonArray.size();
     faces = new Face[numFaces];
     colorMap = new color[numFaces];
-    
+
     // For all faces in the polyhedron,
     for (int i = 0; i < numFaces; ++i) {
-      
+
       // Load the current face's vertex array
       JSONArray vertexCoordsJsonArray = polyFacesJsonArray.getJSONArray(i);
       int numVertices = vertexCoordsJsonArray.size();
@@ -55,17 +61,17 @@ class Polyhedron {
       face.stroke(0);
       face.strokeWeight(0.5);
 
-      // And for each vertex that defines a face, retrieve it's coordinates 
+      // And for each vertex that defines a face, retrieve it's coordinates
       for (int j = 0; j < numVertices; ++j) {
-        
+
         JSONObject coordJsonObj = vertexCoordsJsonArray.getJSONObject(j);
-        
+
         float x = coordJsonObj.getFloat("x");
         float y = coordJsonObj.getFloat("y");
         float z = coordJsonObj.getFloat("z");
-  
+
         //println("PolyH: coords[", i, "] = ", x, ", ", y, ", ", z);
-  
+
         face.vertex(x, y, z);
       }
 
@@ -73,7 +79,59 @@ class Polyhedron {
       faces[i] = new Face(face);
       //println("PolyH: add new face to array list, i = ", i);
     }
-    
+
+    // Create an array of face neighbors
+    //if(Math.abs(sectionID - currentSectionID) < epsilon)
+    for (int i = 0; i < numFaces - 1; ++i) {          // For all but the last face,
+      Face faceA = faces[i];                          // Get the ith faceA
+      Face faceB = null;
+      int k = 0;
+      int numVerticesA = faceA.getNumVertices();      // Get the number of its vertices
+
+      for (k = i + 1; k < numFaces; ++k) {            // For all the faces after faceA,
+        faceB = faces[k];                             // Get the kth face
+        int numVerticesB = faceB.getNumVertices();    // Get the number of faceB vertices
+        int sharedVertices = 0;                       // Init the counter
+
+        for (int j = 0; j < numVerticesA; ++j) {      // For every faceA vertex,
+          PVector vertexA = faceA.getMyVertex(j);     // Get the jth vertex,
+
+          for (int n = 0; n < numVerticesB; ++n) {    // And compare it to every faceB vertex,
+            PVector vertexB = faceB.getMyVertex(n);   // Get the vertex and compare each of its x, y and z
+                                                      // values with the current faceA vertex, respectively
+                                                      // Compare pairs of floating point numbers
+            //println("Face vertex ", i, "-", j, " and ", k, "-", n);
+            //println("vertexA.x, vertexB.x: ", vertexA.x, ", ", vertexB.x);
+            //println("vertexA.y, vertexB.y: ", vertexA.y, ", ", vertexB.y);
+            //println("vertexA.z, vertexB.z: ", vertexA.z, ", ", vertexB.z);
+
+            if ((Math.abs(vertexA.x - vertexB.x) < epsilon) &&
+                (Math.abs(vertexA.y - vertexB.y) < epsilon) &&
+                (Math.abs(vertexA.z - vertexB.z) < epsilon)) {
+                  ++sharedVertices;                   // If all coordinates are "the same", inc the counter
+                  //println("Incing sharedVertices");
+                  break;                              // VertexA is not going to match any other verices of this face.
+            }
+          }
+          if (sharedVertices > 1) {
+            break;
+          }
+        }
+        //println("Number of sharedVertices = ", sharedVertices);
+        if (sharedVertices > 1) {    // If the two faces had more than 1 vertex in common
+                                     // (it will likely be 0 or 2)
+          faceA.addNeighbor(k);      // Added the index of each face to the other's neighbor list
+          faceB.addNeighbor(i);
+          sharedVertices = 0;        // Clear counter
+          //println("Neighbors!");
+        }
+      }
+    }
+
+    for (int i = 0; i < numFaces; ++i) {
+      println("Face ", i, " neighbors are: ", faces[i].getNeighbors());
+    }
+
     visualContent = new VisConGen(numFaces);
   }
 
@@ -83,17 +141,17 @@ class Polyhedron {
       faces[i].setColor(colorMap[i]);
     }
   }
-  
+
   public void setColorPattern(int p) {
     visualContent.setPattern(p);
   }
 
   public void update() {
-    
+
     // Use delay to control speed of color update
     if (frameCount > prevFrameCount + delayFrameCount) {
       prevFrameCount = frameCount;
-      colorMap = visualContent.update();
+      colorMap = visualContent.update(faces);
       setColorMap(colorMap);
     }
 
@@ -107,7 +165,7 @@ class Polyhedron {
       identGroupMember = -1;
     }
   }
-  
+
   public void decIdentGroup() {
     if (identGroupMember > -1) {
       --identGroupMember;
@@ -115,7 +173,7 @@ class Polyhedron {
       identGroupMember = numFaces - 1;
     }
   }
-  
+
   public void drawPoly() {
 
     textSize(32);
@@ -130,18 +188,19 @@ class Polyhedron {
 
     translate(x, y, z);
 
+    // Calculate the X rotation based on the mouse Y value
+    angleXDeg = map(mouseY, height, 0, 0, 180);    // was PI/2
+    angleX = radians(angleXDeg);
+
     //float angleYDeg = map(mouseX, 0, width, 180, -180);    // was PI/2
-    float angleZDeg;
+
+    // Calculate the Z rotation based on the mouse X value
     if (mouseY <= height/2) {
       angleZDeg = map(mouseX, 0, width, 180, -180);
     } else {
       angleZDeg = map(mouseX, width, 0, -180, 180);
     }
     angleZ = radians(angleZDeg);
-
-    float angleXDeg;
-    angleXDeg = map(mouseY, height, 0, 0, 180);    // was PI/2
-    angleX = radians(angleXDeg);
 
     //rotateX(angleXRad);    // was PI/2
     //rotateX(radians(map(mouseX, 0, width, 0, 90)));    // was PI/2
@@ -153,6 +212,7 @@ class Polyhedron {
     scale(scaleFactor);
 
     for (int i = 0; i < numFaces; ++i) {
+      //print("Face [", i, "]
       if (identGroupMember >= 0) {
         if (i == identGroupMember) {
           faces[i].drawFace(color(128));
