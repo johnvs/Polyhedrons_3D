@@ -4,10 +4,8 @@ class Face {
   private PShape face;
   private color faceColor;
   private ArrayList<Integer> neighbors;
-  //private PVector faceCenter;
-  //private PVector normal;
-  //Dir = (B - A) x (C - A)
-  //Norm = Dir / len(Dir)
+  private PVector faceCenter;
+  private PVector faceNormal;
 
   /////////////////////////////////////
   // Constructor
@@ -15,6 +13,29 @@ class Face {
   Face(PShape iFace) {
     face = iFace;
     neighbors = new ArrayList<Integer>();
+    // calc face center and normal
+    faceCenter = findFaceCenter();
+    faceNormal = findFaceNormal();
+  }
+
+  private PVector findFaceCenter() {
+    // PVector center = ;
+    return center;
+  }
+
+  private PVector findFaceNormal() {
+    //Dir = (B - A) x (C - A)
+    //Norm = Dir / len(Dir)
+    // PVector normal = ;
+    return normal;
+  }
+
+  public PVector getCenter() {
+    return faceCenter;
+  }
+
+  public PVector getNormal() {
+    return faceNormal;
   }
 
   public PVector getMyVertex(int index) {
