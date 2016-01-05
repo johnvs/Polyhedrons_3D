@@ -3,13 +3,12 @@ class MapElement {
   float myHue;
   float mySat;
   float myBrt;
+  float myAlpha;
   color myColor;
 
   MapElement() {
-    myHue = ColorMap.HUE_MIN;
-    mySat = ColorMap.SAT_MAX;
-    myBrt = ColorMap.BRT_MAX;
-    setColor(ColorMap.HUE_MIN, ColorMap.SAT_MIN, ColorMap.BRT_MIN);
+    // Create new blank elements as red
+    setColor(ColorMap.HUE_MIN, ColorMap.SAT_MAX, ColorMap.BRT_MAX);
   }
 
   MapElement(float hue_, float sat_, float brt_) {
@@ -58,6 +57,15 @@ class MapElement {
     myColor = color(myHue, mySat, myBrt);
   }
 
+  private float getAlpha() {
+    return myAlpha;
+  }
+
+  private void setAlpha(float alpha_) {
+    myAlpha = alpha_;
+    myColor = color(myAlpha, myHue, mySat, myBrt);
+  }
+
   private ColorMap getMap() {
     return this;
   }
@@ -75,53 +83,34 @@ class MapElement {
   // @param delta - the amount by which to change the hue
   // @returns the new value
   public color getNewHue(float delta) {
-    //float result;
-    //float temp = myHue + delta;
-
     // Return White if delta is too small or large
-    if ((delta >= -HUE_MAX) && (delta <= HUE_MAX)) {
+    if ((delta >= -ColorMap.HUE_MAX) && (delta <= ColorMap.HUE_MAX)) {
       myHue += delta;
 
-      if      (myHue > HUE_MAX) { myHue -= (HUE_MAX + 1); }
-      else if (myHue < HUE_MIN) { myHue += (HUE_MAX + 1); }
-      //else                     { result = myHue;                 }
+      if      (myHue > ColorMap.HUE_MAX) { myHue -= (ColorMap.HUE_MAX + 1); }
+      else if (myHue < ColorMap.HUE_MIN) { myHue += (ColorMap.HUE_MAX + 1); }
+
       return color(myHue, mySat, myBrt);
     } else {
-      return CLR_WHITE.getColor();
+      return ColorMap.CLR_WHITE.getColor();
     }
   }
 
   // Increment the hue value, keeping it in the range of 0 - 255
   private color incHue() {
-    //float fHue = hue(iColor);
-    //int iHue = (int)fHue;
-    //println("Old hue (float, int) = ", fHue, ", ", iHue);
+    // Round the returned value because of an error in the calculation.
+    // float fHue = round(hue(myColor));
+    // int iHue = (int)fHue;
+    // println("Old hue (float, int) = ", fHue, ", ", iHue);
 
-    if (myHue < HUE_MAX) {
+    if (myHue < ColorMap.HUE_MAX) {
       ++myHue;
     } else {
-      myHue = 0;
+      myHue = ColorMap.HUE_MIN;
     }
-    //return color(fHue, saturation(iColor), brightness(iColor));
     color newColor = color(myHue, mySat, myBrt);
     //println("New hue = ", hue(newColor));
     return newColor;
-
-    //float fHue = hue(iColor);
-    //int iHue = (int)hue(iColor);
-    //int iSat = (int)saturation(iColor);
-    //int iBrt = (int)brightness(iColor);
-    //print("Old hue (float, int), sat and brt = ", fHue, ", ", iHue, ", ", iSat, ", ", iBrt);
-
-    //if (iHue < HUE_MAX) {
-    //  ++iHue;
-    //} else {
-    //  iHue = 0;
-    //}
-    //println(", new hue = ", iHue);
-    //color newColor = color(iHue, saturation(iColor), brightness(iColor));
-    //println("New hue, sat and brt = ", hue(newColor), ", ", saturation(newColor), ", ", brightness(newColor));
-    //return newColor;
   }
 
 }
