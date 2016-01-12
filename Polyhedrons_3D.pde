@@ -35,10 +35,9 @@ void draw() {
   if (runShow) {
     background(200);
 
-    for (int i = 0; i < numPolies; ++i) {
-      //println("Updating and drawing polyhedron no. ", i);
-      polyhedrons[i].update();
-      polyhedrons[i].drawPoly();
+    for (Polyhedron poly : polyhedrons) {
+      poly.update();
+      poly.drawPoly();
     }
 
     //if (frameCount > 5) {
