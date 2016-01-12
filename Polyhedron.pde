@@ -20,14 +20,11 @@ class Polyhedron {
 
   private float scaleFactor;
 
-  private color[] colorMap;
+  private color[] colorMap;  // The accumulation of all of visualContent colorMaps
   private VisConGen visualContent;
 
-  private Face faces[];
+  private Face[] faces;
   private int numFaces;
-
-  private int prevFrameCount = 0;
-  private int delayFrameCount = 5;
 
   private int identGroupMember = -1;  // -1  = no group idented, 0 through numFaces-1, that face will be gray
 
@@ -54,12 +51,12 @@ class Polyhedron {
       int numVertices = vertexCoordsJsonArray.size();
 
       // Create all the faces and put them in the array
-      PShape face = null;
-      face = createShape();
-      face.beginShape();
-      //face.noStroke();
-      face.stroke(0);
-      face.strokeWeight(0.5);
+      PShape facePS = null;
+      facePS = createShape();
+      facePS.beginShape();
+      //facePS.noStroke();
+      facePS.stroke(0);
+      facePS.strokeWeight(0.5);
 
       // And for each vertex that defines a face, retrieve it's coordinates
       for (int j = 0; j < numVertices; ++j) {
@@ -72,16 +69,15 @@ class Polyhedron {
 
         //println("PolyH: coords[", i, "] = ", x, ", ", y, ", ", z);
 
-        face.vertex(x, y, z);
+        facePS.vertex(x, y, z);
       }
 
-      face.endShape();
-      faces[i] = new Face(face);
+      facePS.endShape();
+      faces[i] = new Face(facePS);
       //println("PolyH: add new face to array list, i = ", i);
     }
 
     // Create an array of face neighbors
-    //if(Math.abs(sectionID - currentSectionID) < epsilon)
     for (int i = 0; i < numFaces - 1; ++i) {          // For all but the last face,
       Face faceA = faces[i];                          // Get the ith faceA
       Face faceB = null;
@@ -132,14 +128,7 @@ class Polyhedron {
       println("Face ", i, " neighbors are: ", faces[i].getNeighbors());
     }
 
-    visualContent = new VisConGen(numFaces);
-  }
-
-  public void setColorMap(color[] colorMap) {
-    // load color map into face color array
-    for (int i = 0; i < numFaces; ++i) {
-      faces[i].setColor(colorMap[i]);
-    }
+    visualContent = new VisConGen(faces);
   }
 
   public void setColorPattern(int p) {
@@ -148,12 +137,7 @@ class Polyhedron {
 
   public void update() {
 
-    // Use delay to control speed of color update
-    if (frameCount > prevFrameCount + delayFrameCount) {
-      prevFrameCount = frameCount;
-      colorMap = visualContent.update(faces);
-      setColorMap(colorMap);
-    }
+    visualContent.update();
 
     //angleZ += spin;
   }
@@ -178,7 +162,7 @@ class Polyhedron {
 
     textSize(32);
     fill(0, 102, 153);
-    text(identGroupMember, width*0.05, height*0.95);
+    text(identGroupMember, width * 0.05, height * 0.95);
 
     pushMatrix();
 
