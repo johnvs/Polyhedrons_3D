@@ -10,23 +10,37 @@ class Face {
   /////////////////////////////////////
   // Constructor
   /////////////////////////////////////
-  Face(PShape iFace) {
-    face = iFace;
+  Face(PShape face_) {
+    face = face_;
     neighbors = new ArrayList<Integer>();
+
     // calc face center and normal
     faceCenter = findFaceCenter();
     faceNormal = findFaceNormal();
   }
 
   private PVector findFaceCenter() {
-    // PVector center = ;
+    PVector center = new PVector();
+
+    // calculate face center based on the face PShape
+    // Temp
+    center.x = 0;
+    center.y = 0;
+
     return center;
   }
 
   private PVector findFaceNormal() {
+    PVector normal = new PVector();
+
+    // calculate face normal based on the face PShape
     //Dir = (B - A) x (C - A)
     //Norm = Dir / len(Dir)
-    // PVector normal = ;
+
+    // Temp
+    normal.x = 0;
+    normal.y = 0;
+
     return normal;
   }
 
@@ -50,8 +64,8 @@ class Face {
     return neighbors;
   }
 
-  public void setColor(color clr) {
-    faceColor = clr;
+  public void setColor(color color_) {
+    faceColor = color_;
   }
 
   public color getColor() {
