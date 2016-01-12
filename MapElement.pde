@@ -8,7 +8,7 @@ class MapElement {
 
   MapElement() {
     // Create new blank elements as red
-    setColor(ColorMap.HUE_MIN, ColorMap.SAT_MAX, ColorMap.BRT_MAX);
+    setColor(Colors.WHITE);
   }
 
   MapElement(float hue_, float sat_, float brt_) {
@@ -26,9 +26,12 @@ class MapElement {
     myColor = color(myHue, mySat, myBrt);
   }
 
-  //private void setColor(color color_) {
-  //  myColor = color_;
-  //}
+  private void setColor(color color_) {
+    myColor = color_;
+    myHue = round(hue(myColor));
+    mySat = saturation(myColor);
+    myBrt = brightness(myColor);
+  }
 
   private float getHue() {
     return myHue;
@@ -63,18 +66,7 @@ class MapElement {
 
   private void setAlpha(float alpha_) {
     myAlpha = alpha_;
-    myColor = color(myAlpha, myHue, mySat, myBrt);
-  }
-
-  private ColorMap getMap() {
-    return this;
-  }
-
-  private void setMap(ColorMap cM) {
-    myHue = cM.myHue;
-    mySat = cM.mySat;
-    myBrt = cM.myBrt;
-    myColor = color(myHue, mySat, myBrt);
+    myColor = color(myHue, mySat, myBrt, myAlpha);
   }
 
   // Add the given amount to the given hue, accounting for overflow
@@ -84,16 +76,19 @@ class MapElement {
   // @returns the new value
   public color getNewHue(float delta) {
     // Return White if delta is too small or large
-    if ((delta >= -ColorMap.HUE_MAX) && (delta <= ColorMap.HUE_MAX)) {
+    if ((delta >= -Colors.HUE_MAX) && (delta <= Colors.HUE_MAX)) {
       myHue += delta;
 
-      if      (myHue > ColorMap.HUE_MAX) { myHue -= (ColorMap.HUE_MAX + 1); }
-      else if (myHue < ColorMap.HUE_MIN) { myHue += (ColorMap.HUE_MAX + 1); }
+      if      (myHue > Colors.HUE_MAX) { myHue -= (Colors.HUE_MAX + 1); }
+      else if (myHue < Colors.HUE_MIN) { myHue += (Colors.HUE_MAX + 1); }
 
-      return color(myHue, mySat, myBrt);
+      myColor = color(myHue, mySat, myBrt);
+
     } else {
-      return ColorMap.CLR_WHITE.getColor();
+      myColor = Colors.WHITE;
     }
+
+    return myColor;
   }
 
   // Increment the hue value, keeping it in the range of 0 - 255
@@ -103,14 +98,14 @@ class MapElement {
     // int iHue = (int)fHue;
     // println("Old hue (float, int) = ", fHue, ", ", iHue);
 
-    if (myHue < ColorMap.HUE_MAX) {
+    if (myHue < Colors.HUE_MAX) {
       ++myHue;
     } else {
-      myHue = ColorMap.HUE_MIN;
+      myHue = Colors.HUE_MIN;
     }
-    color newColor = color(myHue, mySat, myBrt);
-    //println("New hue = ", hue(newColor));
-    return newColor;
+    myColor = color(myHue, mySat, myBrt);
+
+    return myColor;
   }
 
 }
