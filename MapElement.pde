@@ -15,56 +15,56 @@ class MapElement {
     setColor(hue_, sat_, brt_);
   }
 
-  private color getColor() {
+  public color getColor() {
     return myColor;
   }
 
-  private void setColor(float hue_, float sat_, float brt_) {
+  public void setColor(float hue_, float sat_, float brt_) {
     myHue = hue_;
     mySat = sat_;
     myBrt = brt_;
     myColor = color(myHue, mySat, myBrt);
   }
 
-  private void setColor(color color_) {
+  public void setColor(color color_) {
     myColor = color_;
     myHue = round(hue(myColor));
     mySat = saturation(myColor);
     myBrt = brightness(myColor);
   }
 
-  private float getHue() {
+  public float getHue() {
     return myHue;
   }
 
-  private void setHue(float hue_) {
+  public void setHue(float hue_) {
     myHue = hue_;
     myColor = color(myHue, mySat, myBrt);
   }
 
-  private float getSat() {
+  public float getSat() {
     return mySat;
   }
 
-  private void setSat(float sat_) {
+  public void setSat(float sat_) {
     mySat = sat_;
     myColor = color(myHue, mySat, myBrt);
   }
 
-  private float getBrt() {
+  public float getBrt() {
     return myBrt;
   }
 
-  private void setBrt(float brt_) {
+  public void setBrt(float brt_) {
     myBrt = brt_;
     myColor = color(myHue, mySat, myBrt);
   }
 
-  private float getAlpha() {
+  public float getAlpha() {
     return myAlpha;
   }
 
-  private void setAlpha(float alpha_) {
+  public void setAlpha(float alpha_) {
     myAlpha = alpha_;
     myColor = color(myHue, mySat, myBrt, myAlpha);
   }
@@ -92,7 +92,7 @@ class MapElement {
   }
 
   // Increment the hue value, keeping it in the range of 0 - 255
-  private color incHue() {
+  public color incHue() {
     // Round the returned value because of an error in the calculation.
     // float fHue = round(hue(myColor));
     // int iHue = (int)fHue;
