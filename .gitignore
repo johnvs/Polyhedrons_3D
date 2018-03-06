@@ -11,6 +11,7 @@ Icon
 
 # Generated files
 build/*
+data
 
 # Thumbnails
 ._*
