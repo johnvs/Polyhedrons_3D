@@ -5,9 +5,12 @@
  */
 
 class Polyhedron {
-  private int x;
-  private int y;
-  private int z;
+  // private final float OFFSET_ANGLE_X = PI - atan(2);
+  private final float OFFSET_ANGLE_X = 0;
+
+  private float x;
+  private float y;
+  private float z;
 
   private float angleX = 0;  // radians(60);   // PI/2;
   private float angleY = 0;
@@ -30,11 +33,11 @@ class Polyhedron {
 
   private float epsilon = 0.0000001;  // Used to compare two floats
 
-  Polyhedron(int x_, int y_, int z_, float scaleFactor_, String filename) {
-    x = x_;
-    y = y_;
-    z = z_;
-    scaleFactor = scaleFactor_;
+  Polyhedron(float _x, float _y, float _z, float sF, String filename) {
+    x = _x;
+    y = _y;
+    z = _z;
+    scaleFactor = sF;
 
     // Calculate and store the coordinates of the shape's vertices
     // Load the json data from the file
@@ -174,7 +177,7 @@ class Polyhedron {
 
     // Calculate the X rotation based on the mouse Y value
     angleXDeg = map(mouseY, height, 0, 0, 180);    // was PI/2
-    angleX = radians(angleXDeg);
+    angleX = radians(angleXDeg) + OFFSET_ANGLE_X;
 
     //float angleYDeg = map(mouseX, 0, width, 180, -180);    // was PI/2
 
