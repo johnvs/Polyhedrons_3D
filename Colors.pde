@@ -1,5 +1,4 @@
-
-static class Colors {
+class Colors {
 
   public static final int HUE_MIN = 0;
   public static final int HUE_MAX = 255;
