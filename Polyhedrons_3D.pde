@@ -13,7 +13,14 @@ void setup() {
   numPolies = 1;
   polyhedrons = new Polyhedron[numPolies];
 
-  polyhedrons[0] = new Polyhedron(width/2, height/2, 0, 300, "tetrahedron.json");
+  // polyhedrons[0] = new Polyhedron(width/2, height/2, 0, 300, "Cube.json");
+  // polyhedrons[0] = new Polyhedron(width * 0.25, height * 0.25, 0, 100, "Tetrahedron.json");
+  // polyhedrons[1] = new Polyhedron(width * 0.75, height * 0.25, 0, 100, "Cube.json");
+  // polyhedrons[2] = new Polyhedron(width * 0.25, height * 0.75, 0, 100, "Octahedron.json");
+  // polyhedrons[3] = new Polyhedron(width * 0.75, height * 0.75, 0, 100, "Icosahedron.json");
+   polyhedrons[0] = new Polyhedron(width * 0.5,  height * 0.5,  0,  150, "Dodecahedron01.json");
+//  polyhedrons[0] = new Polyhedron(width * 0.5,  height * 0.5,  0,  200, "StarTetrahedron.json");
+   //polyhedrons[0] = new Polyhedron(width * 0.67,  height * 0.5,  0,  100, "DodecahedronT.json");
 
   //for (int i = 0; i < numPolies; ++i) {
   //  if (i % 2 == 0) {
@@ -29,7 +36,6 @@ void setup() {
 
   runShow = true;
 }
-
 
 void draw() {
   if (runShow) {
@@ -75,9 +81,9 @@ void keyPressed() {
     polyhedrons[0].setColorPattern(3);
   }
 
-  if (key == '4') {
-    polyhedrons[0].setColorPattern(4);
-  }
+  // if (key == '4') {
+  //   polyhedrons[0].setColorPattern(4);
+  // }
 
 }
 
