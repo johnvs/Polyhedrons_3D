@@ -1,6 +1,3 @@
-# Application documentation
-Vertex_Coords.graffle
-
 ### OSX ###
 .DS_Store
 .AppleDouble
@@ -10,7 +7,7 @@ Vertex_Coords.graffle
 Icon
 
 # Generated files
-build/*
+build
 data
 
 # Thumbnails
