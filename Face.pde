@@ -1,5 +1,3 @@
-
-
 class Face {
   private PShape face;
   private color faceColor;
